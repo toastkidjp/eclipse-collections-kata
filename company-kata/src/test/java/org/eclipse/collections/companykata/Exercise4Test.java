@@ -10,15 +10,16 @@
 
 package org.eclipse.collections.companykata;
 
+import java.util.List;
+
 import org.eclipse.collections.api.block.predicate.Predicate;
 import org.eclipse.collections.api.list.MutableList;
+import org.eclipse.collections.impl.factory.Lists;
 import org.eclipse.collections.impl.list.mutable.FastList;
 import org.eclipse.collections.impl.utility.ArrayIterate;
 import org.eclipse.collections.impl.utility.Iterate;
 import org.junit.Assert;
 import org.junit.Test;
-
-import java.util.List;
 
 public class Exercise4Test extends CompanyDomainForKata
 {
@@ -29,9 +30,10 @@ public class Exercise4Test extends CompanyDomainForKata
     @Test
     public void findSupplierNames()
     {
-        MutableList<String> supplierNames = null;
+        final MutableList<String> supplierNames
+            = ArrayIterate.collect(company.getSuppliers(), Supplier::getName);
 
-        MutableList<String> expectedSupplierNames = FastList.newListWith(
+        final MutableList<String> expectedSupplierNames = FastList.newListWith(
                 "Shedtastic",
                 "Splendid Crocks",
                 "Annoying Pets",
@@ -49,8 +51,8 @@ public class Exercise4Test extends CompanyDomainForKata
     @Test
     public void countSuppliersWithMoreThanTwoItems()
     {
-        Predicate<Supplier> moreThanTwoItems = null;
-        int suppliersWithMoreThanTwoItems = 0;
+        final Predicate<Supplier> moreThanTwoItems = supplier -> 2 < supplier.getItemNames().length;
+        final int suppliersWithMoreThanTwoItems = ArrayIterate.count(company.getSuppliers(), moreThanTwoItems);
         Assert.assertEquals("suppliers with more than 2 items", 5, suppliersWithMoreThanTwoItems);
     }
 
@@ -61,10 +63,11 @@ public class Exercise4Test extends CompanyDomainForKata
     public void whoSuppliesSandwichToaster()
     {
         // Create a Predicate that will check to see if a Supplier supplies a "sandwich toaster".
-        Predicate<Supplier> suppliesToaster = null;
+        final Predicate<Supplier> suppliesToaster = supplier -> ArrayIterate.anySatisfy(
+                    supplier.getItemNames(), itemName -> "sandwich toaster".equals(itemName));
 
         // Find one supplier that supplies toasters.
-        Supplier toasterSupplier = null;
+        final Supplier toasterSupplier = ArrayIterate.detect(company.getSuppliers(), suppliesToaster);
         Assert.assertNotNull("toaster supplier", toasterSupplier);
         Assert.assertEquals("Doxins", toasterSupplier.getName());
     }
@@ -72,23 +75,29 @@ public class Exercise4Test extends CompanyDomainForKata
     @Test
     public void filterOrderValues()
     {
-        List<Order> orders = this.company.getMostRecentCustomer().getOrders();
+        final List<Order> orders = this.company.getMostRecentCustomer().getOrders();
         /**
          * Get the order values that are greater than 1.5.
          */
-        MutableList<Double> orderValues = null;
-        MutableList<Double> filtered = null;
+        final MutableList<Double> filtered
+            = Lists.mutable.ofAll(orders)
+                .collect(Order::getValue)
+                .select(value -> 1.5 < value);
         Assert.assertEquals(FastList.newListWith(372.5, 1.75), filtered);
     }
 
     @Test
     public void filterOrders()
     {
-        List<Order> orders = this.company.getMostRecentCustomer().getOrders();
+        final List<Order> orders = this.company.getMostRecentCustomer().getOrders();
         /**
          * Get the actual orders (not their double values) where those orders have a value greater than 2.0.
          */
-        MutableList<Order> filtered = null;
-        Assert.assertEquals(FastList.newListWith(Iterate.getFirst(this.company.getMostRecentCustomer().getOrders())), filtered);
+        final MutableList<Order> filtered
+            = Lists.mutable.ofAll(orders).select(order -> 2.0 < order.getValue());
+        Assert.assertEquals(
+                FastList.newListWith(Iterate.getFirst(this.company.getMostRecentCustomer().getOrders())),
+                filtered
+                );
     }
 }

@@ -12,6 +12,7 @@ package org.eclipse.collections.companykata;
 
 import org.eclipse.collections.api.block.predicate.Predicate;
 import org.eclipse.collections.api.list.MutableList;
+import org.eclipse.collections.api.partition.list.PartitionMutableList;
 import org.eclipse.collections.impl.test.Verify;
 import org.junit.Assert;
 import org.junit.Test;
@@ -21,17 +22,17 @@ public class Exercise2Test extends CompanyDomainForKata
     /**
      * Set up a {@link Predicate} that tests to see if a {@link Customer}'s city is "London"
      */
-    private static final Predicate<Customer> CUSTOMER_FROM_LONDON = null;
+    private static final Predicate<Customer> CUSTOMER_FROM_LONDON = customer -> "London".equals(customer.getCity());
 
     @Test
     public void customerFromLondonPredicate()
     {
-        String predicateClass = CUSTOMER_FROM_LONDON.getClass().getSimpleName();
+        final String predicateClass = CUSTOMER_FROM_LONDON.getClass().getSimpleName();
         Assert.assertTrue(
                 "Solution should use Predicates.attributeEquals() or a lambda but used " + predicateClass,
                 "AttributePredicate".equals(predicateClass) || predicateClass.startsWith("Exercise2Test$$Lambda"));
 
-        Customer customerFromLondon = new Customer("test customer", "London");
+        final Customer customerFromLondon = new Customer("test customer", "London");
 
         Assert.assertEquals(
                 "Implement Customer.TO_CITY",
@@ -49,7 +50,8 @@ public class Exercise2Test extends CompanyDomainForKata
     @Test
     public void doAnyCustomersLiveInLondon()
     {
-        boolean anyCustomersFromLondon = false;
+        final boolean anyCustomersFromLondon
+            = this.company.getCustomers().anySatisfy(CUSTOMER_FROM_LONDON);
         Assert.assertTrue(anyCustomersFromLondon);
     }
 
@@ -59,7 +61,7 @@ public class Exercise2Test extends CompanyDomainForKata
     @Test
     public void doAllCustomersLiveInLondon()
     {
-        boolean allCustomersFromLondon = true;
+        final boolean allCustomersFromLondon = this.company.getCustomers().allSatisfy(CUSTOMER_FROM_LONDON);
         Assert.assertFalse(allCustomersFromLondon);
     }
 
@@ -69,7 +71,7 @@ public class Exercise2Test extends CompanyDomainForKata
     @Test
     public void howManyCustomersLiveInLondon()
     {
-        int numberOfCustomerFromLondon = 0;
+        final int numberOfCustomerFromLondon = this.company.getCustomers().count(CUSTOMER_FROM_LONDON);
         Assert.assertEquals("Should be 2 London customers", 2, numberOfCustomerFromLondon);
     }
 
@@ -80,7 +82,7 @@ public class Exercise2Test extends CompanyDomainForKata
     @Test
     public void getLondonCustomers()
     {
-        MutableList<Customer> customersFromLondon = null;
+        final MutableList<Customer> customersFromLondon = this.company.getCustomers().select(CUSTOMER_FROM_LONDON);
         Verify.assertSize("Should be 2 London customers", 2, customersFromLondon);
     }
 
@@ -91,7 +93,7 @@ public class Exercise2Test extends CompanyDomainForKata
     @Test
     public void getCustomersWhoDontLiveInLondon()
     {
-        MutableList<Customer> customersNotFromLondon = null;
+        final MutableList<Customer> customersNotFromLondon = this.company.getCustomers().reject(CUSTOMER_FROM_LONDON);
         Verify.assertSize("customers not from London", 1, customersNotFromLondon);
     }
 
@@ -102,8 +104,9 @@ public class Exercise2Test extends CompanyDomainForKata
     @Test
     public void getCustomersWhoDoAndDoNotLiveInLondon()
     {
-        MutableList<Customer> customersFromLondon = null;
-        MutableList<Customer> customersNotFromLondon = null;
+        final PartitionMutableList<Customer> partition = this.company.getCustomers().partition(CUSTOMER_FROM_LONDON);
+        final MutableList<Customer> customersFromLondon = partition.getSelected();
+        final MutableList<Customer> customersNotFromLondon = partition.getRejected();
         Verify.assertSize("Should be 2 London customers", 2, customersFromLondon);
         Verify.assertSize("customers not from London", 1, customersNotFromLondon);
     }
@@ -114,7 +117,7 @@ public class Exercise2Test extends CompanyDomainForKata
     @Test
     public void findMary()
     {
-        Customer mary = this.company.getCustomerNamed("Mary");
+        final Customer mary = this.company.getCustomerNamed("Mary");
         Assert.assertEquals("customer's name should be Mary", "Mary", mary.getName());
     }
 
@@ -124,7 +127,8 @@ public class Exercise2Test extends CompanyDomainForKata
     @Test
     public void findPete()
     {
-        Customer pete = this.company.getCustomerNamed("Pete");
+        //customers.detect(customer -> name.equals(customer.getName()));
+        final Customer pete = this.company.getCustomerNamed("Pete");
         Assert.assertNull(
                 "Should be null as there is no customer called Pete",
                 pete);

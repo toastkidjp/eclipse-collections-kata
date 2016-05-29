@@ -27,7 +27,7 @@ public class Exercise3Test extends CompanyDomainForKata
     public void improveGetOrders()
     {
         // Delete this line - it's a reminder
-        Assert.fail("Improve getOrders() without breaking this test");
+        //Assert.fail("Improve getOrders() without breaking this test");
         Verify.assertSize(5, this.company.getOrders());
     }
 
@@ -37,13 +37,13 @@ public class Exercise3Test extends CompanyDomainForKata
     @Test
     public void findItemNames()
     {
-        MutableList<LineItem> allOrderedLineItems = null;
-        MutableSet<String> actualItemNames = null;
+        final MutableList<LineItem> allOrderedLineItems = this.company.getOrders().flatCollect(Order::getLineItems);
+        final MutableSet<String> actualItemNames = allOrderedLineItems.collect(LineItem::getName).toSet();
 
         Verify.assertInstanceOf(MutableSet.class, actualItemNames);
         Verify.assertInstanceOf(String.class, actualItemNames.getFirst());
 
-        MutableSet<String> expectedItemNames = UnifiedSet.newSetWith(
+        final MutableSet<String> expectedItemNames = UnifiedSet.newSetWith(
                 "shed", "big shed", "bowl", "cat", "cup", "chair", "dog",
                 "goldfish", "gnome", "saucer", "sofa", "table");
         Assert.assertEquals(expectedItemNames, actualItemNames);
@@ -52,9 +52,9 @@ public class Exercise3Test extends CompanyDomainForKata
     @Test
     public void findCustomerNames()
     {
-        MutableList<String> names = null;
+        final MutableList<String> names = this.company.getCustomers().collect(Customer::getName);
 
-        MutableList<String> expectedNames = FastList.newListWith("Fred", "Mary", "Bill");
+        final MutableList<String> expectedNames = FastList.newListWith("Fred", "Mary", "Bill");
         Assert.assertEquals(expectedNames, names);
     }
 }

@@ -13,11 +13,9 @@ package org.eclipse.collections.companykata;
 import org.eclipse.collections.api.block.function.Function;
 import org.eclipse.collections.api.list.MutableList;
 import org.eclipse.collections.impl.block.function.AddFunction;
+import org.eclipse.collections.impl.factory.Lists;
 import org.eclipse.collections.impl.utility.ListIterate;
 import org.junit.Assert;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Customers have a name, city and a list of {@link Order}s
@@ -29,16 +27,16 @@ public class Customer
         return null;
     };
 
-    public static final Function<Customer, String> TO_CITY = null;
+    public static final Function<Customer, String> TO_CITY = Customer::getCity;
 
     public static final Function<Customer, Double> TO_TOTAL_ORDER_VALUE = Customer::getTotalOrderValue;
 
     private final String name;
     private final String city;
 
-    private final List<Order> orders = new ArrayList<>();
+    private final MutableList<Order> orders = Lists.mutable.empty();
 
-    public Customer(String name, String city)
+    public Customer(final String name, final String city)
     {
         this.name = name;
         this.city = city;
@@ -54,19 +52,19 @@ public class Customer
         return this.name;
     }
 
-    public List<Order> getOrders()
+    public MutableList<Order> getOrders()
     {
         return this.orders;
     }
 
-    public void addOrder(Order anOrder)
+    public void addOrder(final Order anOrder)
     {
         this.orders.add(anOrder);
     }
 
     public double getTotalOrderValue()
     {
-        MutableList<Double> orderValues = ListIterate.collect(this.orders, Order::getValue);
+        final MutableList<Double> orderValues = ListIterate.collect(this.orders, Order::getValue);
         return orderValues.injectInto(0.0, AddFunction.DOUBLE_TO_DOUBLE);
     }
 }

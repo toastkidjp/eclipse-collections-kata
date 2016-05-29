@@ -10,10 +10,8 @@
 
 package org.eclipse.collections.companykata;
 
-import org.eclipse.collections.api.block.predicate.Predicate;
 import org.eclipse.collections.api.list.MutableList;
 import org.eclipse.collections.impl.list.mutable.FastList;
-import org.junit.Assert;
 
 /**
  * A company has a {@link MutableList} of {@link Customer}s.  It has an array of {@link Supplier}s, and a name.
@@ -26,7 +24,7 @@ public class Company
     // suppliers are array based.
     private Supplier[] suppliers = new Supplier[0];
 
-    public Company(String name)
+    public Company(final String name)
     {
         this.name = name;
     }
@@ -36,7 +34,7 @@ public class Company
         return this.name;
     }
 
-    public void addCustomer(Customer aCustomer)
+    public void addCustomer(final Customer aCustomer)
     {
         this.customers.add(aCustomer);
     }
@@ -48,13 +46,7 @@ public class Company
 
     public MutableList<Order> getOrders()
     {
-        Assert.fail("Refactor this code to use Eclipse Collections as part of Exercise 3");
-        MutableList<Order> orders = FastList.newList();
-        for (Customer customer : this.customers)
-        {
-            orders.addAll(customer.getOrders());
-        }
-        return orders;
+        return this.customers.flatCollect(Customer::getOrders);
     }
 
     public Customer getMostRecentCustomer()
@@ -62,12 +54,12 @@ public class Company
         return this.customers.getLast();
     }
 
-    public void addSupplier(Supplier supplier)
+    public void addSupplier(final Supplier supplier)
     {
         // need to replace the current array of suppliers with another, larger array
         // Of course, normally one would not use an array.
 
-        Supplier[] currentSuppliers = this.suppliers;
+        final Supplier[] currentSuppliers = this.suppliers;
         this.suppliers = new Supplier[currentSuppliers.length + 1];
         System.arraycopy(currentSuppliers, 0, this.suppliers, 0, currentSuppliers.length);
         this.suppliers[this.suppliers.length - 1] = supplier;
@@ -78,12 +70,12 @@ public class Company
         return this.suppliers;
     }
 
-    public Customer getCustomerNamed(String name)
+    public Customer getCustomerNamed(final String name)
     {
         /**
          * Use a {@link Predicate} to find a {@link Customer} with the name given.
          */
-        Assert.fail("Implement this method as part of Exercise 2");
-        return null;
+        //Assert.fail("Implement this method as part of Exercise 2");
+        return customers.detect(customer -> name.equals(customer.getName()));
     }
 }

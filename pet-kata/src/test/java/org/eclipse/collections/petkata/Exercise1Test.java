@@ -21,34 +21,38 @@ public class Exercise1Test extends PetDomainForKata
     @Test
     public void getFirstNamesOfAllPeople()
     {
-        MutableList<Person> people = this.people;
-        MutableList<String> firstNames = null;
-        MutableList<String> expectedFirstNames = Lists.mutable.with("Mary", "Bob", "Ted", "Jake", "Barry", "Terry", "Harry", "John");
+        final MutableList<Person> people = this.people;
+        final MutableList<String> firstNames = people.collect(person -> person.getFirstName());
+        final MutableList<String> expectedFirstNames
+            = Lists.mutable.with("Mary", "Bob", "Ted", "Jake", "Barry", "Terry", "Harry", "John");
         Assert.assertEquals(expectedFirstNames, firstNames);
     }
 
     @Test
     public void getNamesOfMarySmithsPets()
     {
-        Person person = this.getPersonNamed("Mary Smith");
-        MutableList<Pet> pets = person.getPets();
-        MutableList<String> names = null; //Replace null, with a transformation method on MutableList.
+        final Person person = this.getPersonNamed("Mary Smith");
+        final MutableList<Pet> pets = person.getPets();
+      //Replace null, with a transformation method on MutableList.
+        final MutableList<String> names = person.getPets().collect(pet -> pet.getName());
         Assert.assertEquals("Tabby", names.makeString());
     }
 
     @Test
     public void getPeopleWithCats()
     {
-        MutableList<Person> people = this.people;
-        MutableList<Person> peopleWithCats = null;
+        final MutableList<Person> people = this.people;
+        final MutableList<Person> peopleWithCats
+            = people.select(person -> person.hasPet(PetType.CAT));
         Verify.assertSize(2, peopleWithCats);
     }
 
     @Test
     public void getPeopleWithoutCats()
     {
-        MutableList<Person> people = this.people;
-        MutableList<Person> peopleWithoutCats = null;
+        final MutableList<Person> people = this.people;
+        final MutableList<Person> peopleWithoutCats
+            = people.reject(person -> person.hasPet(PetType.CAT));
         Verify.assertSize(6, peopleWithoutCats);
     }
 }

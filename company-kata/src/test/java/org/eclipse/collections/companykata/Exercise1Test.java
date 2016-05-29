@@ -22,15 +22,15 @@ public class Exercise1Test extends CompanyDomainForKata
     @Test
     public void getCustomerNames()
     {
-        Function<Customer, String> nameFunction = Customer::getName;
+        final Function<Customer, String> nameFunction = Customer::getName;
 
         /**
          * Get the name of each of the company's customers.
          */
-        MutableList<Customer> customers = this.company.getCustomers();
-        MutableList<String> customerNames = null;
+        final MutableList<Customer> customers = this.company.getCustomers();
+        final MutableList<String> customerNames = customers.collect(Customer::getName);
 
-        MutableList<String> expectedNames = FastList.newListWith("Fred", "Mary", "Bill");
+        final MutableList<String> expectedNames = FastList.newListWith("Fred", "Mary", "Bill");
         Assert.assertEquals(expectedNames, customerNames);
     }
 
@@ -40,10 +40,10 @@ public class Exercise1Test extends CompanyDomainForKata
         /**
          * Get the city for each of the company's customers.
          */
-        MutableList<Customer> customers = this.company.getCustomers();
-        MutableList<String> customerCities = null;
+        final MutableList<Customer> customers = this.company.getCustomers();
+        final MutableList<String> customerCities = customers.collect(Customer::getCity);
 
-        MutableList<String> expectedCities = FastList.newListWith("London", "Liphook", "London");
+        final MutableList<String> expectedCities = FastList.newListWith("London", "Liphook", "London");
         Assert.assertEquals(expectedCities, customerCities);
     }
 
@@ -53,8 +53,9 @@ public class Exercise1Test extends CompanyDomainForKata
         /**
          * Which customers come from London? Get a collection of those which do.
          */
-        MutableList<Customer> customers = this.company.getCustomers();
-        MutableList<Customer> customersFromLondon = null;
+        final MutableList<Customer> customers = this.company.getCustomers();
+        final MutableList<Customer> customersFromLondon
+            = customers.select(customer -> "London".equals(customer.getCity()));
         Verify.assertSize("Should be 2 London customers", 2, customersFromLondon);
     }
 }
